@@ -8,22 +8,23 @@ if (!MONGODB_URI) {
   );
 }
 
-interface MongooseCache {
+const mongoUri: string = MONGODB_URI;
+
+type MongooseCache = {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
-}
+};
 
-declare global {
-  // eslint-disable-next-line no-var
-  var mongooseCache: MongooseCache | undefined;
-}
+const globalForMongoose = globalThis as typeof globalThis & {
+  mongooseCache?: MongooseCache;
+};
 
-const cached: MongooseCache = global.mongooseCache || {
+const cached: MongooseCache = globalForMongoose.mongooseCache ?? {
   conn: null,
   promise: null,
 };
 
-global.mongooseCache = cached;
+globalForMongoose.mongooseCache = cached;
 
 export async function connectDB(): Promise<typeof mongoose> {
   if (cached.conn) {
@@ -31,7 +32,7 @@ export async function connectDB(): Promise<typeof mongoose> {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI, {
+    cached.promise = mongoose.connect(mongoUri, {
       bufferCommands: false,
     });
   }

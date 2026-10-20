@@ -5,7 +5,6 @@ import { connectDB } from "@/lib/db";
 import Admin from "@/lib/models/Admin";
 import { generateToken } from "@/lib/jwt";
 
-export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   try {

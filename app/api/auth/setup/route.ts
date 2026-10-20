@@ -4,8 +4,6 @@ import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/db";
 import Admin from "@/lib/models/Admin";
 
-export const runtime = "nodejs";
-
 export async function POST(request: NextRequest) {
   try {
     const setupSecret = process.env.ADMIN_SETUP_SECRET;

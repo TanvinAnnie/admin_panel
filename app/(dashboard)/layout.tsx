@@ -1,15 +1,17 @@
-
+import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { getAuthenticatedAdmin } from "@/lib/auth";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Navbar from "@/components/dashboard/Navbar";
-
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Must run before reading cookies or verifying JWT.
+  await connection();
+
   const admin = await getAuthenticatedAdmin();
 
   if (!admin) {
@@ -17,15 +19,16 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f7fb]">
-      <Sidebar />
+  <div className="min-h-screen bg-gray-50">
+    <Sidebar />
+
+    <div className="min-h-screen lg:pl-64">
       <Navbar />
 
-      <main className="ml-64 min-h-screen pt-20">
-        <div className="p-5 sm:p-8 lg:p-9">
-          {children}
-        </div>
+      <main className="min-h-screen px-6 pb-6 pt-28">
+        {children}
       </main>
     </div>
-  );
+  </div>
+);
 }

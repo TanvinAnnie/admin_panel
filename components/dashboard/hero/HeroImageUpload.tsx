@@ -2,7 +2,12 @@
 "use client";
 
 import { useRef, useState, type ChangeEvent } from "react";
-import { Upload, Image as ImageIcon, LoaderCircle, X } from "lucide-react";
+import {
+  Upload,
+  Image as ImageIcon,
+  LoaderCircle,
+  X,
+} from "lucide-react";
 
 interface HeroImageUploadProps {
   value: string;
@@ -13,9 +18,11 @@ interface HeroImageUploadProps {
 interface UploadResponse {
   success: boolean;
   message?: string;
+  url?: string;
+  publicId?: string;
   data?: {
-    url: string;
-    publicId: string;
+    url?: string;
+    publicId?: string;
   };
 }
 
@@ -51,14 +58,17 @@ export default function HeroImageUpload({
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Image size must not exceed 5 MB.");
+    if (file.size === 0 || file.size > 5 * 1024 * 1024) {
+      setError("Image size must be greater than 0 and not exceed 5 MB.");
       event.target.value = "";
       return;
     }
 
     const formData = new FormData();
     formData.append("file", file);
+
+    // Keep the existing Hero upload destination.
+    formData.append("context", "hero");
 
     setUploading(true);
 
@@ -68,13 +78,22 @@ export default function HeroImageUpload({
         body: formData,
       });
 
-      const result: UploadResponse = await response.json();
+      let result: UploadResponse;
 
-      if (!response.ok || !result.success || !result.data?.url) {
+      try {
+        result = (await response.json()) as UploadResponse;
+      } catch {
+        throw new Error("The server returned an invalid upload response.");
+      }
+
+      // Support both the original and updated API response formats.
+      const uploadedUrl = result.url ?? result.data?.url;
+
+      if (!response.ok || !result.success || !uploadedUrl) {
         throw new Error(result.message || "Image upload failed.");
       }
 
-      onChange(result.data.url);
+      onChange(uploadedUrl);
       setSuccess("Image uploaded successfully.");
     } catch (err) {
       setError(
@@ -106,7 +125,7 @@ export default function HeroImageUpload({
             <Upload className="h-4 w-4" />
           )}
 
-          {uploading ? "Uploading..." : "Upload image"}
+          {uploading ? "Uploading..." : value ? "Change image" : "Upload image"}
         </button>
 
         {value && (
@@ -118,7 +137,7 @@ export default function HeroImageUpload({
               setError("");
               setSuccess("");
             }}
-            className="inline-flex items-center gap-1 rounded-xl border border-neutral-200 px-3 py-3 text-sm font-medium text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+            className="inline-flex items-center gap-1 rounded-xl border border-neutral-200 px-3 py-3 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50 disabled:opacity-50"
           >
             <X className="h-4 w-4" />
             Remove image
@@ -141,9 +160,27 @@ export default function HeroImageUpload({
       </div>
 
       {value && (
-        <p className="break-all text-xs text-neutral-500">
-          Uploaded image URL: {value}
-        </p>
+        <div className="space-y-2">
+          <div className="overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50">
+            <img
+              src={value}
+              alt="Uploaded cover preview"
+              className="max-h-64 w-full object-contain"
+              onError={() => {
+                setError(
+                  "The image URL was saved, but the preview could not load."
+                );
+              }}
+              onLoad={() => {
+                setError("");
+              }}
+            />
+          </div>
+
+          <p className="break-all text-xs text-neutral-500">
+            Image URL: {value}
+          </p>
+        </div>
       )}
 
       {success && (
@@ -153,7 +190,7 @@ export default function HeroImageUpload({
       )}
 
       {error && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="break-words text-sm text-red-600">
           {error}
         </p>
       )}

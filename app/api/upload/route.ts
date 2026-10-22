@@ -12,6 +12,7 @@ const UPLOAD_FOLDERS = {
   hero: "maheen-accessories/hero",
   services: "maheen-accessories/services",
   "photo-albums": "maheen-accessories/photo-albums",
+  about: "maheen-accessories/about",
 } as const;
 
 type UploadContext = keyof typeof UPLOAD_FOLDERS;

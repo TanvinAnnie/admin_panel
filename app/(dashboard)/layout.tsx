@@ -1,15 +1,15 @@
+
 import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { getAuthenticatedAdmin } from "@/lib/auth";
-import Sidebar from "@/components/dashboard/Sidebar";
-import Navbar from "@/components/dashboard/Navbar";
+import DashboardShell from "@/components/dashboard/DashboardShell";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Must run before reading cookies or verifying JWT.
+  // Resolve request-specific authentication before rendering.
   await connection();
 
   const admin = await getAuthenticatedAdmin();
@@ -18,17 +18,5 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  return (
-  <div className="min-h-screen bg-gray-50">
-    <Sidebar />
-
-    <div className="min-h-screen lg:pl-64">
-      <Navbar />
-
-      <main className="min-h-screen px-6 pb-6 pt-28">
-        {children}
-      </main>
-    </div>
-  </div>
-);
+  return <DashboardShell>{children}</DashboardShell>;
 }

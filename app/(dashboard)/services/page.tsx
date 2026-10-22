@@ -155,9 +155,10 @@ export default function ServicesPage() {
   const inactiveCount = services.length - activeCount;
 
   return (
-    <div className="mx-auto w-full max-w-[1600px] space-y-6 pb-8">
+    <div className="w-full min-w-0 max-w-full space-y-6">
       {/* Page header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-600">
             Website Management
@@ -172,7 +173,7 @@ export default function ServicesPage() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap gap-3">
           <button
             type="button"
             onClick={() => void loadServices(true)}
@@ -194,7 +195,8 @@ export default function ServicesPage() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+
         <SummaryCard label="Total Services" value={services.length} />
         <SummaryCard label="Active Services" value={activeCount} />
         <SummaryCard label="Inactive Services" value={inactiveCount} />

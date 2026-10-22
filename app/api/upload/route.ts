@@ -14,6 +14,7 @@ const UPLOAD_FOLDERS = {
   "photo-albums": "maheen-accessories/photo-albums",
   about: "maheen-accessories/about",
   features: "maheen-accessories/features",
+  "team-members": "maheen-accessories/team-members",
 
 } as const;
 

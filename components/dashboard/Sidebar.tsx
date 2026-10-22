@@ -18,7 +18,7 @@ const sections = [
       { label: "About Us", href: "/about", icon: "ⓘ" },
       { label: "Features", href: "/features", icon: "☆" },
       { label: "Policies", href: "/policies", icon: "▤" },
-      { label: "Management", href: "/management", icon: "♙" },
+      { label: "Team Members", href: "/team-members", icon: "♙" },
       { label: "Portfolio", href: "/portfolio", icon: "▣" },
       { label: "Testimonials", href: "/testimonials", icon: "☷" },
       { label: "Partners", href: "/partners", icon: "♧" },

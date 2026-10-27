@@ -15,7 +15,7 @@ const UPLOAD_FOLDERS = {
   about: "maheen-accessories/about",
   features: "maheen-accessories/features",
   "team-members": "maheen-accessories/team-members",
-
+  portfolio: "maheen-accessories/portfolio",
 } as const;
 
 type UploadContext = keyof typeof UPLOAD_FOLDERS;
@@ -70,7 +70,10 @@ export async function POST(request: NextRequest) {
 
     if (file.size === 0 || file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { success: false, message: "Image size must be between 1 byte and 5 MB." },
+        {
+          success: false,
+          message: "Image size must be between 1 byte and 5 MB.",
+        },
         { status: 400 }
       );
     }
@@ -83,7 +86,10 @@ export async function POST(request: NextRequest) {
       console.error("Cloudinary environment variables are missing.");
 
       return NextResponse.json(
-        { success: false, message: "Image upload is not configured." },
+        {
+          success: false,
+          message: "Image upload is not configured.",
+        },
         { status: 500 }
       );
     }
@@ -119,7 +125,10 @@ export async function POST(request: NextRequest) {
     console.error("Image upload error:", error);
 
     return NextResponse.json(
-      { success: false, message: "Failed to upload image." },
+      {
+        success: false,
+        message: "Failed to upload image.",
+      },
       { status: 500 }
     );
   }
